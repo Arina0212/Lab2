@@ -42,7 +42,7 @@ class UserController(Controller):
         self,
         user_service: UserService,
         db_session: AsyncSession,
-        data: UserCreate = Body(),  # ← ИСПРАВЬ ЗДЕСЬ: добавь = Body()
+        data: UserCreate = Body(),
     ) -> UserResponse:
         user = await user_service.create(db_session, data)
         await db_session.commit()
@@ -64,7 +64,7 @@ class UserController(Controller):
         user_service: UserService,
         db_session: AsyncSession,
         user_id: int,
-        data: UserUpdate = Body(),  # ← ИСПРАВЬ ЗДЕСЬ: добавь = Body()
+        data: UserUpdate = Body(),
     ) -> UserResponse:
         user = await user_service.update(db_session, user_id, data)
         await db_session.commit()

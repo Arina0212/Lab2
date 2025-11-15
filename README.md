@@ -29,3 +29,30 @@ curl -X PUT "http://localhost:8000/users/1" -H "Content-Type: application/json" 
 ```bash
 curl -X DELETE "http://localhost:8000/users/1"
 ```
+## 3. Тестирование приложения
+```bash
+pip install pytest pytest-asyncio pytest-cov httpx
+```
+### Запуск тестов
+```bash
+# Все тесты
+pytest
+
+# Только тесты репозиториев
+pytest tests/test_repositories/
+
+# Только тесты сервисов  
+pytest tests/test_services/
+
+# Только тесты API
+pytest tests/test_controllers/
+
+# С подробным выводом
+pytest -v
+
+# С выводом print-ов
+pytest -s
+
+# С покрытием кода
+pytest --cov=app --cov-report=html
+```

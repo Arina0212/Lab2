@@ -1,0 +1,28 @@
+[project]
+name = "lab2"
+version = "0.1.0"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "--verbose --color=yes"
+
+[tool.coverage.run]
+source = ["app"]
+omit = [
+    "*/__init__.py",
+    "*/main.py"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError"
+]

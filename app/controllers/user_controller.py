@@ -1,11 +1,11 @@
-from litestar import Controller, get, post, put, delete
-from litestar.params import Parameter, Body
+from litestar import Controller, delete, get, post, put
 from litestar.exceptions import NotFoundException
+from litestar.params import Body, Parameter
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.schemas.user import UserCreate, UserListResponse, UserResponse, UserUpdate
 from app.services.user_service import UserService
-from app.schemas.user import UserResponse, UserCreate, UserUpdate, UserListResponse
-from typing import List
+
 
 class UserController(Controller):
     path = "/users"
@@ -34,7 +34,7 @@ class UserController(Controller):
         total = await user_service.get_total_count(db_session)
         return UserListResponse(
             users=[UserResponse.model_validate(user) for user in users],
-            total_count=total
+            total_count=total,
         )
 
     @post()

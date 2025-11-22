@@ -41,7 +41,7 @@ pytest
 # Только тесты репозиториев
 pytest tests/test_repositories/
 
-# Только тесты сервисов  
+# Только тесты сервисов
 pytest tests/test_services/
 
 # Только тесты API
@@ -56,3 +56,14 @@ pytest -s
 # С покрытием кода
 pytest --cov=app --cov-report=html
 ```
+## 4. Настройка pre-commit
+```bash
+pre-commit install
+pre-commit run --all-files
+```
+
+## 5. Запуск в Docker
+```bash
+docker-compose up --build
+```
+Адрес http://localhost:8000/users

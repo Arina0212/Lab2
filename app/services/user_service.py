@@ -1,7 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models.user import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.user import UserCreate, UserUpdate
-from app.models.user import User
+
 
 class UserService:
     def __init__(self, user_repository: UserRepository):
@@ -10,7 +12,9 @@ class UserService:
     async def get_by_id(self, session: AsyncSession, user_id: int) -> User | None:
         return await self.user_repository.get_by_id(session, user_id)
 
-    async def get_by_filter(self, session: AsyncSession, count: int, page: int, **kwargs) -> list[User]:
+    async def get_by_filter(
+        self, session: AsyncSession, count: int, page: int, **kwargs
+    ) -> list[User]:
         return await self.user_repository.get_by_filter(session, count, page, **kwargs)
 
     async def create(self, session: AsyncSession, user_data: UserCreate) -> User:
@@ -20,10 +24,12 @@ class UserService:
         )
         if existing_users:
             raise ValueError(f"User with email {user_data.email} already exists")
-        
+
         return await self.user_repository.create(session, user_data)
 
-    async def update(self, session: AsyncSession, user_id: int, user_data: UserUpdate) -> User:
+    async def update(
+        self, session: AsyncSession, user_id: int, user_data: UserUpdate
+    ) -> User:
         return await self.user_repository.update(session, user_id, user_data)
 
     async def delete(self, session: AsyncSession, user_id: int) -> None:

@@ -5,23 +5,18 @@ services:
     build: .
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql://user:password@db:5432/mydatabase
-      - DB_HOST=db
-      - DB_PORT=5432
-      - HOST=0.0.0.0
-      - PORT=8000
     depends_on:
-      - db
-
-  db:
-    image: postgres:13
+      - rabbitmq
     environment:
-      - POSTGRES_DB=mydatabase
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - .:/app
 
-volumes:
-  postgres_data:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest

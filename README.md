@@ -68,19 +68,25 @@ docker-compose up --build
 ```
 Адрес http://localhost:8000/users
 
-## 6.
+## 6. Запуск проверки лабораторной
 ```bash
 docker-compose down
 docker-compose up --build
-# Остановите consumers
-docker-compose stop app
-
-# Опубликуйте сообщения
-python -m app.rabbitmq.producer
-
-# Проверьте очереди
-docker-compose exec rabbitmq rabbitmqctl list_queues name messages_ready messages_unacknowledged
-
-# Или вашим скриптом
-docker-compose exec app python app/check_rabbitmq.py
+```
+В другом терминале 1 отправляем данные 
+```bash
+python -m app.producers.data_producer
+```
+Проверяем очереди
+```bash
+http://localhost:15672 (guest/guest)
+```
+В другом терминале 2 запускаем consumer 
+```bash
+python -m app.producers.data_producer
+```
+В терминале 3: проверка API
+```bash
+curl http://localhost:8000/api/v1/products
+curl http://localhost:8000/api/v1/orders
 ```

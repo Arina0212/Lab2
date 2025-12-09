@@ -3,7 +3,8 @@ from litestar.exceptions import NotFoundException
 from litestar.params import Body, Parameter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.user import UserCreate, UserListResponse, UserResponse, UserUpdate
+from app.cache import cache_user, get_cached_user, invalidate_user_cache
+from app.schemas import UserCreate, UserListResponse, UserResponse, UserUpdate
 from app.services.user_service import UserService
 
 
@@ -17,10 +18,16 @@ class UserController(Controller):
         db_session: AsyncSession,
         user_id: int = Parameter(gt=0),
     ) -> UserResponse:
+        cached_user = await get_cached_user(user_id)
+        if cached_user:
+            return UserResponse(**cached_user)
+
         user = await user_service.get_by_id(db_session, user_id)
         if not user:
             raise NotFoundException(detail=f"User with ID {user_id} not found")
-        return UserResponse.model_validate(user)
+        response = UserResponse.model_validate(user)
+        await cache_user(user_id, response.model_dump())
+        return response
 
     @get()
     async def get_all_users(
@@ -37,7 +44,7 @@ class UserController(Controller):
             total_count=total,
         )
 
-    @post()
+    @post(status_code=201)
     async def create_user(
         self,
         user_service: UserService,
@@ -46,9 +53,11 @@ class UserController(Controller):
     ) -> UserResponse:
         user = await user_service.create(db_session, data)
         await db_session.commit()
-        return UserResponse.model_validate(user)
+        response = UserResponse.model_validate(user)
+        await cache_user(user.id, response.model_dump())
+        return response
 
-    @delete("/{user_id:int}")
+    @delete("/{user_id:int}", status_code=204)
     async def delete_user(
         self,
         user_service: UserService,
@@ -57,6 +66,7 @@ class UserController(Controller):
     ) -> None:
         await user_service.delete(db_session, user_id)
         await db_session.commit()
+        await invalidate_user_cache(user_id)
 
     @put("/{user_id:int}")
     async def update_user(
@@ -68,4 +78,5 @@ class UserController(Controller):
     ) -> UserResponse:
         user = await user_service.update(db_session, user_id, data)
         await db_session.commit()
+        await invalidate_user_cache(user_id)
         return UserResponse.model_validate(user)

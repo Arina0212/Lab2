@@ -90,3 +90,14 @@ python -m app.producers.data_producer
 curl http://localhost:8000/api/v1/products
 curl http://localhost:8000/api/v1/orders
 ```
+
+## 7. Лабораторная №7 — Redis
+```bash
+docker-compose up --build
+```
+```bash
+python scripts/redis_demo.py
+```
+```bash
+python -m pytest
+```

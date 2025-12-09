@@ -1,7 +1,7 @@
 import pytest
 
 from app.repositories.user_repository import UserRepository
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas import UserCreate, UserUpdate
 
 
 class TestUserRepository:

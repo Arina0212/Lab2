@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas import UserCreate, UserUpdate
 from app.services.user_service import UserService
 
 

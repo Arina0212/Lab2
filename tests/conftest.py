@@ -11,12 +11,23 @@ from litestar.di import Provide
 from litestar.testing import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from app import cache
 from app.controllers.user_controller import UserController
-from app.models.user import Base
+from app.models import Base
 from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
+
+
+@pytest.fixture(autouse=True)
+def disable_redis(monkeypatch, request):
+    """Disable real Redis during tests to avoid event loop issues."""
+    cache.reset_clients()
+    if request.node.get_closest_marker("enable_redis"):
+        return
+    monkeypatch.setattr(cache, "get_async_client", lambda: None)
+    monkeypatch.setattr(cache, "get_sync_client", lambda: None)
 
 
 @pytest.fixture
@@ -74,12 +85,13 @@ def app(engine):
             "user_service": Provide(provide_user_service, sync_to_thread=False),
         },
         on_startup=[on_startup],
+        debug=True,
     )
 
 
 @pytest.fixture
 def client(app):
-    return TestClient(app=app)
+    return TestClient(app=app, raise_server_exceptions=True)
 
 
 @pytest.fixture

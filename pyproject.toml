@@ -9,6 +9,9 @@ requires = ["setuptools", "wheel"]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 addopts = "--verbose --color=yes"
+markers = [
+    "enable_redis: allow tests to use real/fake redis connections",
+]
 
 [tool.coverage.run]
 source = ["app"]

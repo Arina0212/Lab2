@@ -101,3 +101,21 @@ python scripts/redis_demo.py
 ```bash
 python -m pytest
 ```
+
+## 7. Лабораторная №8
+```bash
+alembic upgrade head
+```
+```bash
+docker-compose up --build
+```
+```bash
+docker-compose up -d app
+```
+```bash
+docker-compose run --rm app python -m taskiq scheduler app.scheduler:scheduler --skip-first-run
+```
+```bash
+docker-compose run --rm app python -m taskiq worker app.scheduler:broker
+```
+http://localhost:8000/docs#/default/get_report_api_v1_report_get

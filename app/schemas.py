@@ -82,3 +82,11 @@ class Order(OrderBase):
     items: List[OrderItem] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class OrderReport(BaseModel):
+    report_at: datetime
+    order_id: int
+    count_product: int
+
+    model_config = ConfigDict(from_attributes=True)

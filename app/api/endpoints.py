@@ -12,6 +12,8 @@ from app.cache import (
     invalidate_products_cache,
 )
 from app.database import get_db
+from datetime import date
+from fastapi import Query
 
 router = APIRouter()
 
@@ -110,3 +112,16 @@ def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
 
     db.commit()
     return db_order
+
+
+@router.get("/report", response_model=List[schemas.OrderReport])
+def get_report(
+    report_at: date = Query(..., description="Дата отчета в формате YYYY-MM-DD"),
+    db: Session = Depends(get_db),
+):
+    reports = (
+        db.query(models.OrderReport)
+        .filter(models.OrderReport.report_at == report_at)
+        .all()
+    )
+    return reports

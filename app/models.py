@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
@@ -43,3 +43,14 @@ class OrderItem(Base):
 
     order = relationship("Order", backref="items")
     product = relationship("Product")
+
+
+class OrderReport(Base):
+    __tablename__ = "order_reports"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    report_at = Column(Date, nullable=False, index=True)
+    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False, index=True)
+    count_product = Column(Integer, nullable=False)
+
+    order = relationship("Order")
